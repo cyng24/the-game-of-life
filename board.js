@@ -46,7 +46,7 @@ Board.prototype.indexFor = function([row, col]) {
  * Get the value of the board at coords.
  */
 Board.prototype.get = function (coords) {
-  return this.cells[this.indexFor(coords)] || 0
+  return this.cells[this.indexFor(coords)] || 0;
 }
 
 /**
@@ -55,7 +55,8 @@ Board.prototype.get = function (coords) {
  * Set the value of the board at coords to value.
  */
 Board.prototype.set = function(coords, value) {
-  // TODO
+  this.cells[this.indexFor(coords)] = value;
+  return value;
 }
 
 /**
@@ -64,8 +65,20 @@ Board.prototype.set = function(coords, value) {
  * Return the count of living neighbors around a given coordinate.
  */
 Board.prototype.livingNeighbors = function([row, col]) {
-  // TODO: Return the count of living neighbors.
+  var counter = 0;
+  counter += this.get([row-1,col-1])
+  + this.get([row-1,col])
+  + this.get([row-1,col+1])
+  + this.get([row,col-1])
+  + this.get([row,col+1])
+  + this.get([row+1,col-1])
+  + this.get([row+1,col])
+  + this.get([row+1,col+1]);
+  console.log(counter);
+  return counter;
 }
+
+
 
 /**
  * toggle(coords: [row: int, col: int])
@@ -73,7 +86,8 @@ Board.prototype.livingNeighbors = function([row, col]) {
  * Toggle the cell at coords from alive to dead or vice versa.
  */
 Board.prototype.toggle = function(coords) {
-  // TODO
+  return this.set(coords,!this.cells[this.indexFor(coords)]);
+  
 }
 
 /**
@@ -84,7 +98,11 @@ Board.prototype.toggle = function(coords) {
  * @param {Number} numLivingNeighbors 
  */
 function conway(isAlive, numLivingNeighbors) {
-  // TODO
+  if(isAlive){
+	return numLivingNeighbors == 2 || numLivingNeighbors == 3;
+  }else{
+	return numLivingNeighbors == 3;
+  }
 }
 
 /**
@@ -96,6 +114,18 @@ function conway(isAlive, numLivingNeighbors) {
  * @param {(Boolean, Int) -> Boolean} rules (default: conway)
  */
 function tick(present, future, rules=conway) {
-  // TODO
-  return [future, present]
+  var currPresent = present;
+  var currFuture = future;
+  present = currFuture;  
+  console.log("calls tick" + this.height + " w: " + this.width);
+  for(var row=0; row<present.height; row++){
+  	  for(var col=0; col<present.width; col++){
+	  	  console.log("gets into loop");
+		  var settingTo = rules(currPresent.get([row,col]),currPresent.livingNeighbors([row,col]));
+		  future.set([row,col],settingTo);
+		  console.log("r" + row + "c" + col + " " + settingTo);
+	  }
+  }
+
+  return [future, present];
 }

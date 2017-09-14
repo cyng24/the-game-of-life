@@ -4,9 +4,17 @@ if (mainElement) {
 
   // Connect #step_btn to the step function
   document.getElementById('step_btn')
-    .addEventListener('click', game.step)
-
-  // TODO: Connect other buttons.
+    .addEventListener('click', game.step);
+	//play
+	document.getElementById('play_btn')
+    .addEventListener('click', game.play);
+	//reset
+	document.getElementById('reset_btn')
+    .addEventListener('click', game.reset)
+	//clear
+	document.getElementById('clear_btn')
+    .addEventListener('click', game.clear)
+  
 }
 
 function Life(container, width=12, height=12) {
@@ -50,8 +58,8 @@ function Life(container, width=12, height=12) {
     // FIXME: This currently always toggles cell (0, 0).
     // How do we get the coordinate of the cell that was clicked on?
     // HINT: https://developer.mozilla.org/en-US/docs/Web/API/Event/target
-    var cell = document.getElementById('0-0'); // ⬅️ Fix me
-    present.toggle(cell.coord)
+    var cell = stringToArrayCoords(event.target.id);//document.getElementById('0-0'); // ⬅️ Fix me
+    present.toggle(cell)
     paint()
   }
 
@@ -67,6 +75,19 @@ function Life(container, width=12, height=12) {
     // HINT:
     //   https://developer.mozilla.org/en-US/docs/Web/API/Element/classList
     //   https://developer.mozilla.org/en-US/docs/Web/API/Element/getElementsByTagName
+	var tds = table.getElementsByTagName("td");
+	for(var i in tds){
+		var living = present.get(stringToArrayCoords(tds[i].id));
+		if(living){
+			tds[i].addClass("alive");
+		} else if(tds[i].classList.contains("alive")) tds[i].removeClass("alive");
+	}
+
+  }
+
+  function stringToArrayCoords(s){
+  	  //"0-0" -> [0,0]
+	  return s.slice(1,s.length-1).split("-");
   }
 
   function step() {
@@ -107,7 +128,8 @@ function Life(container, width=12, height=12) {
     // TODO:
     // Start playing by running the `step` function    
     // automatically repeatedly every fixed time interval
-    
+    var self = this;
+	self.step();
     // HINT:
     // https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval
   }
