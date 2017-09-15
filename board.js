@@ -35,8 +35,7 @@ Board.prototype.indexFor = function([row, col]) {
   // http://2ality.com/2015/01/es6-destructuring.html  
   
   // Return undefined if we're out of bounds
-  if (row < 0 || row >= this.height || col < 0 || col >= this.width)
-    return  
+  if (row < 0 || row >= this.height || col < 0 || col >= this.width) {return};  
   return row * this.width + col
 }
 
@@ -56,7 +55,7 @@ Board.prototype.get = function (coords) {
  */
 Board.prototype.set = function(coords, value) {
   this.cells[this.indexFor(coords)] = value;
-  return value;
+  //return value;
 }
 
 /**
@@ -74,7 +73,6 @@ Board.prototype.livingNeighbors = function([row, col]) {
   + this.get([row+1,col-1])
   + this.get([row+1,col])
   + this.get([row+1,col+1]);
-  console.log(counter);
   return counter;
 }
 
@@ -86,8 +84,7 @@ Board.prototype.livingNeighbors = function([row, col]) {
  * Toggle the cell at coords from alive to dead or vice versa.
  */
 Board.prototype.toggle = function(coords) {
-  return this.set(coords,!this.cells[this.indexFor(coords)]);
-  
+  this.set(coords,!this.cells[this.indexFor(coords)]);
 }
 
 /**
@@ -117,15 +114,11 @@ function tick(present, future, rules=conway) {
   var currPresent = present;
   var currFuture = future;
   present = currFuture;  
-  console.log("calls tick" + this.height + " w: " + this.width);
   for(var row=0; row<present.height; row++){
   	  for(var col=0; col<present.width; col++){
-	  	  console.log("gets into loop");
 		  var settingTo = rules(currPresent.get([row,col]),currPresent.livingNeighbors([row,col]));
 		  future.set([row,col],settingTo);
-		  console.log("r" + row + "c" + col + " " + settingTo);
 	  }
   }
-
   return [future, present];
 }

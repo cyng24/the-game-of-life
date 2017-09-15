@@ -75,19 +75,22 @@ function Life(container, width=12, height=12) {
     // HINT:
     //   https://developer.mozilla.org/en-US/docs/Web/API/Element/classList
     //   https://developer.mozilla.org/en-US/docs/Web/API/Element/getElementsByTagName
-	var tds = table.getElementsByTagName("td");
+  var tds = table.getElementsByTagName("td");
 	for(var i in tds){
-		var living = present.get(stringToArrayCoords(tds[i].id));
+    if(tds[i].id === undefined) break;
+    var living = present.get(stringToArrayCoords(tds[i].id));
 		if(living){
-			tds[i].addClass("alive");
-		} else if(tds[i].classList.contains("alive")) tds[i].removeClass("alive");
+      tds[i].classList.add("alive");
+		} else if(tds[i].classList.contains("alive")) tds[i].classList.remove("alive");
 	}
 
   }
 
   function stringToArrayCoords(s){
-  	  //"0-0" -> [0,0]
-	  return s.slice(1,s.length-1).split("-");
+      //"0-0" -> [0,0]
+    return (s.split("-")).map(function(x){
+      return parseInt(x);
+    });
   }
 
   function step() {
@@ -129,7 +132,7 @@ function Life(container, width=12, height=12) {
     // Start playing by running the `step` function    
     // automatically repeatedly every fixed time interval
     var self = this;
-	self.step();
+	game.step();
     // HINT:
     // https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval
   }
