@@ -55,7 +55,6 @@ Board.prototype.get = function (coords) {
  */
 Board.prototype.set = function(coords, value) {
   this.cells[this.indexFor(coords)] = value;
-  //return value;
 }
 
 /**

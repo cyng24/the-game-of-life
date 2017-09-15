@@ -10,7 +10,7 @@ if (mainElement) {
     .addEventListener('click', game.play);
 	//reset
 	document.getElementById('reset_btn')
-    .addEventListener('click', game.reset)
+    .addEventListener('click', game.random)
 	//clear
 	document.getElementById('clear_btn')
     .addEventListener('click', game.clear)
@@ -55,6 +55,7 @@ function Life(container, width=12, height=12) {
   }
   
   function toggleCellFromEvent(event) {
+    console.log("toggled");
     // FIXME: This currently always toggles cell (0, 0).
     // How do we get the coordinate of the cell that was clicked on?
     // HINT: https://developer.mozilla.org/en-US/docs/Web/API/Event/target
@@ -75,15 +76,14 @@ function Life(container, width=12, height=12) {
     // HINT:
     //   https://developer.mozilla.org/en-US/docs/Web/API/Element/classList
     //   https://developer.mozilla.org/en-US/docs/Web/API/Element/getElementsByTagName
-  var tds = table.getElementsByTagName("td");
-	for(var i in tds){
-    if(tds[i].id === undefined) break;
-    var living = present.get(stringToArrayCoords(tds[i].id));
-		if(living){
-      tds[i].classList.add("alive");
-		} else if(tds[i].classList.contains("alive")) tds[i].classList.remove("alive");
-	}
-
+    var tds = table.getElementsByTagName("td");
+    for(var i in tds){
+      if(tds[i].id === undefined) break;
+      var living = present.get(stringToArrayCoords(tds[i].id));
+      if(living){
+        tds[i].classList.add("alive");
+      } else if(tds[i].classList.contains("alive")) tds[i].classList.remove("alive");
+    }
   }
 
   function stringToArrayCoords(s){
@@ -93,10 +93,10 @@ function Life(container, width=12, height=12) {
     });
   }
 
-  function step() {
+  function step(rules) {
     // Hello, destructuring assignment:
     //   https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
-    ;[present, future] = tick(present, future);  // tick is from board.js
+    ;[present, future] = tick(present, future, rules);  // tick is from board.js
     // ⬆️ Why is there a semicolon at the beginning of this line?
     //
     // It's not necessary, but we have it there to avoid a confusing problem.
@@ -128,11 +128,10 @@ function Life(container, width=12, height=12) {
   }
 
   function play() {
+    setInterval(step, 100);
     // TODO:
     // Start playing by running the `step` function    
     // automatically repeatedly every fixed time interval
-    var self = this;
-	game.step();
     // HINT:
     // https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setInterval
   }
@@ -148,11 +147,35 @@ function Life(container, width=12, height=12) {
   }
 
   function clear() {
-    // TODO: Clear the board
+    step(() => 0);
+    /*
+    var tds = present;
+    //var tds = table.getElementsByTagName("td");
+    for(var i in tds){
+      if(tds[i].id === undefined) break;
+      tds[i] = 0;
+    }
+    paint();
+    */
   }
 
   function random() {
-    // TODO: Randomize the board
+    step(() => Math.round(Math.random()));
+    /*
+    var tds = present;
+    for(var i in tds){
+      if(tds[i].id === undefined) break;
+      if (Math.round(Math.random())){
+        tds[i] = 1;
+      }
+      else {
+        if (tds[i].classList.contains("alive")){
+          tds[i] = 0;
+        }
+      }
+    }
+    paint();
+    */
   }
 
   return {play, step, stop, togglePlaying, random, clear}
